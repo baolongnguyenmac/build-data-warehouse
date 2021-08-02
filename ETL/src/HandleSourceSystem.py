@@ -425,13 +425,13 @@ class ETL:
                 print('nothing new in source product')
 
     def _getSourceSystemSale(self, df):
-        """[summary]
+        """get the sale data from source
 
         Args:
-            df ([type]): [description]
+            df (dataframe): source df
 
         Returns:
-            [type]: [description]
+            dâtframe: source data (no duplication)
         """
         sourceSale = df[['Row ID', 'Order ID', 'Order Date', 'Ship Date', 'Ship Mode', 'Sales', 'Quantity', 'Discount', 'Profit', 
                         'Product ID', 'Product Name', 'Category', 'Sub-Category', 
@@ -450,6 +450,11 @@ class ETL:
         return sourceSale
 
     def ETLSaleDetail(self, df):
+        """do the ETL job for sale detail table
+
+        Args:
+            df (dataframe): source df
+        """
         sourceSale = self._getSourceSystemSale(df)
 
         numOfSource = sourceSale.count()
@@ -462,14 +467,15 @@ class ETL:
             print('nothing new in source sale detail')
 
     def doETL(self):
+        """do the whole ETL process
+        """
         df = self._getSource()
         self.newRowID = self.oldRowID + df.count()
         self.ETLDate(df)
         self.ETLCustomer(df)
         self.ETLProduct(df)
         self.ETLSaleDetail(df)
-        stt = 'finish'
-        self._logToMetaDB(self.newRowID, stt)
+        self._logToMetaDB(self.newRowID, 'finish')
 
 etler = ETL()
 etler.doETL()
